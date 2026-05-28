@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>综平行业简报 · 新框架 v2</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --pri:#1a3a5c;--acc:#d04a2f;--gold:#c8922a;--bg:#f4f6f9;
+  --bd:#dde2eb;--t:#2c3e50;--mu:#6b7a8d;--w:#fff;
+  --green:#16a34a;--blue:#3b82f6;--pur:#7c3aed
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--t);font-size:14px;line-height:1.7}
+
+/* ── Header ── */
+.report-header{background:linear-gradient(135deg,#1a3a5c 0%,#0f2540 60%,#1a3a5c 100%);color:#fff;padding:36px 60px 30px;position:relative;overflow:hidden}
+.report-header::before{content:"";position:absolute;top:-40px;right:-40px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.04)}
+.report-header .label{display:inline-block;background:var(--acc);color:#fff;font-size:11px;font-weight:600;letter-spacing:1.5px;padding:2px 10px;border-radius:2px;margin-bottom:12px}
+.report-header h1{font-size:26px;font-weight:700;line-height:1.35;margin-bottom:10px}
+.report-header .meta{display:flex;gap:20px;font-size:12.5px;color:rgba(255,255,255,.6);flex-wrap:wrap}
+@media(max-width:720px){.report-header{padding:28px 18px 24px}.report-header h1{font-size:20px}}
+
+/* ── 容器 ── */
+.container{max-width:1200px;margin:0 auto;padding:28px 32px 60px}
+@media(max-width:720px){.container{padding:18px 14px 48px}}
+
+/* ── 核心结论 ── */
+.conclusion-first{background:linear-gradient(135deg,#1a3a5c,#0f2540);color:#fff;border-radius:6px;padding:24px 28px;margin-bottom:28px}
+.conclusion-first h3{font-size:14px;font-weight:700;margin-bottom:12px;color:#fcd34d}
+.conclusion-first p{font-size:13.5px;line-height:1.9;color:rgba(255,255,255,.9)}
+.predict{color:#f59e0b;font-weight:600}
+
+/* ── 板块标题 ── */
+.section{margin-bottom:28px}
+.section-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--pri);border-bottom:2px solid var(--pri);padding-bottom:7px;margin-bottom:14px;line-height:1.2}
+.section-title .num{background:var(--pri);color:#fff;font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-sub{font-size:12.5px;font-weight:700;color:var(--pri);margin:12px 0 7px;border-left:3px solid var(--pri);padding-left:9px;line-height:1.2}
+
+/* ── 小结条 ── */
+.boss-summary{display:flex;align-items:flex-start;gap:9px;background:#1a3a5c;border-radius:5px;padding:10px 14px;margin-bottom:14px}
+.boss-summary .bs-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.boss-summary .bs-text{font-size:12.5px;color:#fff;line-height:1.65}
+.boss-summary .bs-text strong{color:#fcd34d}
+.boss-summary .bs-label{font-size:10px;font-weight:700;color:#fcd34d;letter-spacing:1px;margin-bottom:2px}
+
+/* ── 图表区 ── */
+.charts-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px}
+.charts-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:14px}
+@media(max-width:900px){.charts-grid{grid-template-columns:1fr}.charts-grid-2{grid-template-columns:1fr}}
+.chart-card{background:var(--w);border:1px solid var(--bd);border-radius:5px;padding:14px 16px}
+.chart-card h5{font-size:12px;font-weight:700;color:var(--pri);margin-bottom:10px}
+.chart-canvas-wrap{position:relative;height:160px}
+
+/* ── 标签 ── */
+.tag-s{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:600;margin:1px 2px 1px 0;white-space:nowrap}
+.tag-s.op{background:#dcfce7;color:#166534}
+.tag-s.risk{background:#fee2e2;color:#b91c1c}
+.tag-s.watch{background:#fef3c7;color:#92400e}
+.tag-s.new{background:#e0e7ff;color:#3730a3}
+
+/* 本周新增标记 */
+.new-badge{display:inline-block;font-size:10px;font-weight:700;background:#d04a2f;color:#fff;padding:1px 5px;border-radius:3px;margin-right:4px;vertical-align:middle}
+
+/* ── MAU图 ── */
+.mau-charts-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:10px}
+@media(max-width:800px){.mau-charts-grid{grid-template-columns:1fr}}
+.chart-canvas-wrap-tall{position:relative;height:200px}
+
+/* 产品动态卡 */
+.np-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:14px}
+@media(max-width:680px){.np-grid{grid-template-columns:1fr}}
+.np-card{background:var(--w);border:1px solid var(--bd);border-radius:5px;border-top:3px solid var(--pri);padding:11px 13px}
+.np-card.red{border-top-color:var(--acc)}
+.np-card.pur{border-top-color:var(--pur)}
+.np-card.gold{border-top-color:var(--gold)}
+.np-tag{display:inline-block;font-size:10px;font-weight:600;padding:1px 6px;border-radius:8px;margin-bottom:5px}
+.np-tag.model{background:#dcfce7;color:#166534}
+.np-tag.app{background:#fef3c7;color:#92400e}
+.np-tag.agent{background:#ede9fe;color:#5b21b6}
+.np-card h4{font-size:12.5px;font-weight:700;color:var(--pri);margin-bottom:4px}
+.np-card p{font-size:12px;color:var(--mu);line-height:1.6}
+.np-card p strong{color:var(--t)}
+
+/* ── 618 时间轴 ── */
+.c618{background:var(--w);border:1px solid var(--bd);border-radius:5px;padding:14px 18px;margin-bottom:14px;border-top:3px solid var(--acc)}
+.c618 h4{font-size:12px;font-weight:700;color:var(--acc);letter-spacing:.5px;margin-bottom:10px}
+.timeline618{display:flex;gap:0;overflow-x:auto}
+.tl-item{flex:1;min-width:100px;padding:7px 9px;border-right:1px solid var(--bd);text-align:center}
+.tl-item:last-child{border-right:none}
+.tl-date{font-size:10px;color:var(--mu);margin-bottom:3px}
+.tl-name{font-size:11.5px;font-weight:700;color:var(--pri)}
+.tl-sub{font-size:10.5px;color:var(--mu);margin-top:2px;line-height:1.35}
+.tl-item.now{background:#fff7ed}
+.tl-item.now .tl-name{color:var(--acc)}
+
+/* ── 电商客户表 ── */
+.ec-wrap{overflow-x:auto;margin-bottom:14px}
+.ec-table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--w);border:1px solid var(--bd)}
+.ec-table thead tr{background:var(--pri);color:#fff}
+.ec-table thead th{padding:7px 10px;text-align:left;font-size:12px;font-weight:600;white-space:nowrap}
+.ec-table tbody td{padding:8px 10px;border-bottom:1px solid #eef0f4;vertical-align:top;line-height:1.6}
+.ec-table tbody tr:last-child td{border-bottom:none}
+.ec-table tbody tr:nth-child(even) td{background:#f8fafc}
+.c-name{font-weight:700;font-size:13px;white-space:nowrap}
+.c-name.ali{color:#f97316}
+.c-name.jd{color:var(--blue)}
+.c-name.pdd{color:#a855f7}
+.c-name.dw{color:#1d3557}
+.insight-row{background:none;padding:2px 0;font-size:12.5px;color:var(--t)}
+.hl-key{background:#fff0cc;color:#92400e;font-weight:700;border-radius:2px;padding:0 3px}
+.hl-risk{background:#fee2e2;color:#b91c1c;font-weight:700;border-radius:2px;padding:0 3px}
+.hl-op{background:#dcfce7;color:#166534;font-weight:700;border-radius:2px;padding:0 3px}
+
+/* ── 网服表格 ── */
+.netco-table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--w);border:1px solid var(--bd);margin-bottom:6px}
+.netco-table thead tr{background:var(--pri);color:#fff}
+.netco-table thead th{padding:7px 12px;text-align:left;font-size:12px;font-weight:600;white-space:nowrap}
+.netco-table tbody td{padding:9px 12px;border-bottom:1px solid #eef0f4;vertical-align:top;line-height:1.6}
+.netco-table tbody tr:last-child td{border-bottom:none}
+.netco-table tbody tr:nth-child(even) td{background:#f8fafc}
+.nt-name{font-weight:800;font-size:13px;white-space:nowrap}
+.nt-badge{display:inline-block;font-size:10px;font-weight:600;padding:1px 6px;border-radius:8px;margin-left:4px;white-space:nowrap}
+.nb-tc{background:#dcfce7;color:#166534}
+.nb-bd{background:#dbeafe;color:#1d4ed8}
+.nb-soc{background:#ede9fe;color:#5b21b6}
+
+/* ── 同比标签行 ── */
+.yoy-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.yoy-tag{display:inline-flex;align-items:center;gap:3px;font-size:11px;padding:2px 7px;border-radius:3px;font-weight:600;white-space:nowrap}
+.yoy-tag .yoy-label{color:#6b7a8d;font-weight:400}
+.yoy-up{background:#dcfce7;color:#166534}
+.yoy-dn{background:#fee2e2;color:#b91c1c}
+.yoy-flat{background:#f1f5f9;color:#475569}
+
+/* ── 来源链接 ── */
+.source-link{display:inline;font-size:11px;color:var(--mu);text-decoration:none;border-bottom:1px dashed #bbb;margin-right:6px}
+.source-link:hover{color:var(--pri)}
+.src-row{margin-top:8px;font-size:11.5px;color:var(--mu)}
+
+/* ── Footer ── */
+.footer{margin-top:36px;padding:16px 20px;background:var(--w);border-top:1px solid var(--bd);font-size:11.5px;color:var(--mu);border-radius:4px}
+.footer a{color:var(--mu);text-decoration:none;border-bottom:1px dashed #bbb;margin-right:8px}
+.footer a:hover{color:var(--pri)}
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div class="report-header">
+  <div class="label">INDUSTRY BRIEF · 2026.W22</div>
+  <h1>综平行业简报 - 电商广告 &amp; 网服动态</h1>
+  <div class="meta">
+    <span>📅 2026年5月第4周（5月25日–5月31日）</span>
+    <span>📊 数据截至2026年5月28日</span>
+    <span>✍️ 出品：综平分析组</span>
+    <span>🔖 618冲刺 - 五大平台Q1财报全部出齐 - 小红书获世界杯版权 - AI格局更新</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ── 核心结论 ── -->
+<div class="conclusion-first">
+  <h3>⭐ 本周核心结论</h3>
+  <p>
+    <strong style="color:#fcd34d;letter-spacing:.5px">【电商外投窗口】</strong><br>
+    ①<strong>阿里（优先）</strong>——淘宝闪购承诺2027财年UE转正前持续外投，618生鲜/即时商超确定性最高；千问拉新财报确认，争取6月排期。<br>
+    ②<strong>拼多多（次优）</strong>——<span class="new-badge">本周新</span>新拼姆落地上海，联席董事长制确立；系PDD历史首次系统性站外拉新需求，618前后是首波窗口。<br>
+    ③<strong>京东（持续关注）</strong>——Q1营销费154亿（+45.8%）主投外卖，618是年内最大效果预算集中采购窗口。
+  </p>
+  <p style="margin-top:10px">
+    <strong style="color:#fcd34d;letter-spacing:.5px">【AI大厂买量格局】</strong><br>
+    ④<strong>增长侧</strong>——豆包（3.36亿↑）/千问（1.66亿↑）稳定增长，千问买量财报确认；Kimi商业化加速，K2.5后20天收入超去年全年，是AI赛道外投增量重要信号。<br>
+    ⑤<strong>回落侧</strong>——DeepSeek（1.27亿↓）春节高峰后持续回落，C端投入有限；元宝（5735万↓）春节活动结束后大幅回落。
+  </p>
+  <p style="margin-top:10px">
+    <strong style="color:#fcd34d;letter-spacing:.5px">【竞媒动态与网服机会】</strong><br>
+    ⑥<strong>腾讯</strong>——AIM+覆盖30%广告主，快手以下沉市场/直播种草差异化承接AI大厂补量需求。<br>
+    ⑦<strong>百度</strong>——在线营销收入-22%首次跌破半壁江山，搜索广告主（医疗/教育/金融）预算有外溢，快手应针对性设计转化链路。<br>
+    ⑧<strong>小红书（竞对警惕）</strong>——<span class="new-badge">本周新</span>获央视2026世界杯分销版权，抖音退赛，快手接洽中；世界杯6月12日开幕，<span class="hl-risk">品牌主（酒水/汽车）预算外溢风险加大</span>；月活超4亿，种草心智与快手高度竞争。<br>
+    ⑨<strong>社交AI陪伴APP</strong>——Soul/陌陌/探探/星野与快手用户高度重合，<span class="hl-op">暑期（7–8月）是买量大周期</span>，提前锁排期。
+  </p>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- ★ 财报触发模块（本周：阿里+腾讯+PDD+百度Q1全出） -->
+<!-- ═══════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="num">★</span>本周财报趋势 - 五大平台营收 / 营销费（广告收入） / 费用率（25Q1–26Q1）</div>
+  <div class="boss-summary">
+    <div class="bs-icon">📊</div>
+    <div class="bs-text">
+      <div class="bs-label">数据说明</div>
+      <strong>电商平台（阿里/京东/PDD）</strong>：营销费用 = 平台花出去的买量钱；费用率 = 营销费用/营业收入。<strong>媒体平台（腾讯/百度）</strong>：展示广告收入（平台挣进来的钱），口径不同，不可与电商横向比较。<span style="font-size:11px"><strong>百度特别说明</strong>：在线营销收入采用 Baidu General Business（百度核心业务）口径，即搜索+信息流广告，不含爱奇艺在线广告收入（约13亿/季）；营业收入仍为 Baidu Inc. 合并口径（含爱奇艺），因此两者分母不同，广告占比仅供趋势参考。</span>
+    </div>
+  </div>
+
+  <!-- 电商三家：3列 -->
+  <div class="section-sub">电商平台 - 营业收入 &amp; 营销费用 &amp; 费用率趋势</div>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h5>🟠 阿里巴巴（单位：亿元）</h5>
+      <div class="yoy-bar">
+        <span class="yoy-tag yoy-flat"><span class="yoy-label">营收</span>2434亿 +3%</span>
+        <span class="yoy-tag yoy-up"><span class="yoy-label">营销费</span>534亿 +48%</span>
+        <span class="yoy-tag yoy-up"><span class="yoy-label">费用率</span>21.9% +6.6pct</span>
+      </div>
+      <div class="chart-canvas-wrap"><canvas id="chartAli"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h5>🔵 京东（单位：亿元）</h5>
+      <div class="yoy-bar">
+        <span class="yoy-tag yoy-flat"><span class="yoy-label">营收</span>3157亿 +5%</span>
+        <span class="yoy-tag yoy-up"><span class="yoy-label">营销费</span>154亿 +47%</span>
+        <span class="yoy-tag yoy-up"><span class="yoy-label">费用率</span>4.9% +1.4pct</span>
+      </div>
+      <div class="chart-canvas-wrap"><canvas id="chartJD"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h5>🟣 拼多多（单位：亿元）</h5>
+      <div class="yoy-bar">
+        <span class="yoy-tag yoy-up"><span class="yoy-label">营收</span>1062亿 +11%</span>
+        <span class="yoy-tag yoy-flat"><span class="yoy-label">营销费</span>338亿 +1%</span>
+        <span class="yoy-tag yoy-up"><span class="yoy-label">费用率</span>31.8% -3.1pct</span>
+      </div>
+      <div class="chart-canvas-wrap"><canvas id="chartPDD"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 媒体两家：2列 -->
+  <div class="section-sub">媒体平台 - 营业收入 &amp; 广告收入 &amp; 广告占比趋势（广告收入 = 卖给广告主的钱；广告占比 = 广告收入/营业收入，与电商口径不同）</div>
+  <div class="charts-grid-2">
+    <div class="chart-card">
+      <h5>🟢 腾讯（单位：亿元）</h5>
+      <div class="yoy-bar">
+        <span class="yoy-tag yoy-flat"><span class="yoy-label">营收</span>1965亿 +9%</span>
+        <span class="yoy-tag yoy-up"><span class="yoy-label">广告收入</span>382亿 +20%</span>
+        <span class="yoy-tag yoy-up"><span class="yoy-label">广告占比</span>19.4% +1.7pct</span>
+      </div>
+      <div class="chart-canvas-wrap"><canvas id="chartTC"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h5>🔵 百度（单位：亿元）</h5>
+      <div class="yoy-bar">
+        <span class="yoy-tag yoy-flat"><span class="yoy-label">营收</span>321亿 +1%</span>
+        <span class="yoy-tag yoy-dn"><span class="yoy-label">在线营销</span>126亿 -22%</span>
+        <span class="yoy-tag yoy-dn"><span class="yoy-label">广告占比</span>39.3% -9.9pct</span>
+      </div>
+      <div class="chart-canvas-wrap"><canvas id="chartBD"></canvas></div>
+    </div>
+  </div>
+  <div class="src-row">来源：<a class="source-link" href="https://finance.sina.com.cn/tech/roll/2026-05-15/doc-inhxxspq8209456.shtml" target="_blank">阿里Q1财报</a><a class="source-link" href="https://www.ebrun.com/20260513/668569.shtml" target="_blank">京东Q1财报</a><a class="source-link" href="https://finance.sina.cn/stock/jdts/2026-05-28/detail-inhzkfve8259402.d.html" target="_blank">PDD Q1财报</a><a class="source-link" href="https://www.chinastarmarket.cn/detail/2370603" target="_blank">腾讯Q1财报</a><a class="source-link" href="https://caifuhao.eastmoney.com/news/20260522132245315724040" target="_blank">百度Q1财报</a>历史季报口径统一为自然季度</div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- §1 综平AI部分 -->
+<!-- ═══════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="num">1</span>综平AI部分 - MAU格局趋势 &amp; 近期产品动态</div>
+  <div class="boss-summary">
+    <div class="bs-icon">👔</div>
+    <div class="bs-text">
+      <div class="bs-label">小结</div>
+      <strong>豆包（3.36亿↑）/千问（1.66亿↑）/夸克（1.24亿→）</strong>三个阿里+字节系应用持续增长，千问买量已财报确认；<strong>DeepSeek（1.27亿↓）</strong>春节高峰后持续回落，C端投入有限；<strong>元宝（5735万↓）</strong>春节红包活动结束后从1.3亿大幅回落；<strong>Kimi</strong>商业化加速，K2.5发布后20天收入超2025全年，是AI赛道外投增量重要信号。
+    </div>
+  </div>
+
+  <div class="section-sub">国内头部AI应用 MAU 趋势（2025年12月–2026年4月，AICPB口径）</div>
+  <div class="mau-charts-grid">
+    <div class="chart-card">
+      <h5>头部应用 MAU 趋势（亿）- 豆包 / 千问 / DeepSeek / 夸克</h5>
+      <div class="chart-canvas-wrap-tall"><canvas id="chartMauTop"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h5>腰部应用 MAU 趋势（万）- 元宝 / Kimi</h5>
+      <div class="chart-canvas-wrap-tall"><canvas id="chartMauMid"></canvas></div>
+    </div>
+  </div>
+  <div class="src-row">来源：<a class="source-link" href="https://m.thepaper.cn/newsDetail_forward_33016996" target="_blank">QuestMobile 2026Q1</a>（月度趋势数据为各方公开报道综合估算，趋势方向可信，具体数值以QuestMobile月报为准）</div>
+
+  <!-- AI产品动态：文字版（每周更新新信息） -->
+  <div class="section-sub">本周AI产品动态（5月25日–5月31日）</div>
+  <div class="boss-summary" style="background:#0f2540">
+    <div class="bs-icon">🤖</div>
+    <div class="bs-text" style="line-height:1.75">
+      <strong>· 阿里千牛Claw</strong>：618前后面向商家大规模推广，使用即消耗Token；通义MaaS ARR年底目标300亿，千问Q1买量财报确认。<br>
+      <strong>· Kimi K2.5</strong>：上线后20天收入超2025全年；月活持续增长，<span class="hl-op">商业化加速信号明确</span>，是AI赛道外投增量重要观察对象。<br>
+      <span style="color:rgba(255,255,255,.5);font-size:11px">（本模块每周同步更新有新进展的产品动态，无新进展不重复列入）</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- §2 综平电商非AI部分 -->
+<!-- ═══════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="num">2</span>综平电商非AI部分 - 头部客户外投预算动向</div>
+  <div class="boss-summary">
+    <div class="bs-icon">👔</div>
+    <div class="bs-text">
+      <div class="bs-label">小结</div>
+      618冲刺期阿里/京东预算确定性高；<strong>本周新增：PDD Q1财报出炉，营销费338亿维持平稳，新拼姆落地上海，联席董事长制正式明确（赵佳臻+陈磊）</strong>；得物内容种草节奏稳定。
+    </div>
+  </div>
+
+  <!-- 618节奏 -->
+  <div class="c618">
+    <h4>🛒 618大促活动节奏一览（2026年）</h4>
+    <div class="timeline618">
+      <div class="tl-item">
+        <div class="tl-date">5月20日</div>
+        <div class="tl-name">阿里预售开启</div>
+        <div class="tl-sub">定金预付 爆款提前锁</div>
+      </div>
+      <div class="tl-item now">
+        <div class="tl-date">5月25日–6月1日 ▶ 本周</div>
+        <div class="tl-name">各平台蓄水期</div>
+        <div class="tl-sub">内容种草 外投高峰</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">6月1日</div>
+        <div class="tl-name">阿里/京东正式开门</div>
+        <div class="tl-sub">第一波销售冲刺</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">6月14日</div>
+        <div class="tl-name">京东自营节</div>
+        <div class="tl-sub">3C/家电集中爆发</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">6月17日晚–18日</div>
+        <div class="tl-name">618大促高峰</div>
+        <div class="tl-sub">全品类总决赛</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 电商客户外投信息总览（财报数据已移至财报模块，此处只放外投动向） -->
+  <div class="ec-wrap">
+    <table class="ec-table">
+      <thead>
+        <tr>
+          <th style="width:72px">客户</th>
+          <th>外投核心动向（本周新增优先）</th>
+          <th>机会 - 风险 - 建议</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- 阿里 -->
+        <tr>
+          <td><span class="c-name ali">🟠 阿里</span></td>
+          <td>
+            <strong>千问拉新</strong>：Q1财报确认，买量亏损扩大印证规模；<strong>淘宝闪购</strong>：承诺<span class="hl-op">2027财年UE转正前持续外投</span>，618是最大窗口；<span class="hl-risk">HappyHorse</span>视频生成竞品（前可灵技术负责人张迪）需持续关注<br>
+            <a class="source-link" href="https://finance.sina.com.cn/tech/roll/2026-05-15/doc-inhxxspq8209456.shtml" target="_blank">阿里Q1财报</a>
+          </td>
+          <td>
+            <div class="insight-row"><span class="hl-op">淘宝闪购618生鲜/即时商超确定性最高</span>；千问拉新争取6月排期。HappyHorse进展持续跟踪。</div>
+          </td>
+        </tr>
+
+        <!-- 京东 -->
+        <tr>
+          <td><span class="c-name jd">🔵 京东</span></td>
+          <td>
+            <strong>外卖拉新</strong>：Q1营销费154亿（+45%），外卖目标用户2.4亿、份额30%，618是年内最大采购窗口；七鲜小厨年底覆盖一二线<br>
+            <a class="source-link" href="https://www.ebrun.com/20260513/668569.shtml" target="_blank">京东Q1财报</a>
+          </td>
+          <td>
+            <div class="insight-row">外卖拉新是最大单项增量，<span class="hl-op">618是年内最大效果预算窗口</span>。<span class="predict">【预判】</span>高线城市用户重合度高，转化效率需实际数据验证。</div>
+          </td>
+        </tr>
+
+        <!-- PDD -->
+        <tr>
+          <td><span class="c-name pdd">🟣 拼多多</span></td>
+          <td>
+            <span class="new-badge">本周新</span><strong>管理层</strong>：联席董事长制落地（赵佳臻+陈磊），战略"重仓中国供应链"<br>
+            <strong>新拼姆</strong>：落地上海注资150亿，<span class="hl-op">PDD历史首次</span>系统性站外拉新；腰部商家千亿扶持持续<br>
+            <a class="source-link" href="https://finance.sina.cn/stock/jdts/2026-05-28/detail-inhzkfve8259402.d.html" target="_blank">PDD Q1财报</a>
+          </td>
+          <td>
+            <div class="insight-row"><span class="hl-op">新拼姆是快手新增外投来源</span>，下沉市场/女性用户与消费品品牌高度重合，<span class="hl-key">618前后是首波窗口</span>。<span class="predict">【预判】</span>关注业绩会对外投预算的具体表述。</div>
+          </td>
+        </tr>
+
+        <!-- 得物 -->
+        <tr>
+          <td><span class="c-name dw">🏷️ 得物</span></td>
+          <td>
+            618球鞋/潮流/奢品<span class="hl-key">限量款预售+验货</span>差异化冲刺；内容化招募创作者，拓展手表/箱包品类<br>
+            <span style="font-size:11px;color:var(--mu)">※ 信息来源于公开报道及平台公告</span>
+          </td>
+          <td>
+            <div class="insight-row">Z世代/一二线年轻男性与快手破圈方向重叠，<span class="hl-op">内容种草投流是稳定合作形式</span>，618节点主动对接。</div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- §3 综平网服非AI部分 -->
+<!-- ═══════════════════════════════════ -->
+<div class="section">
+  <div class="section-title"><span class="num">3</span>综平网服非AI部分 - 竞媒动态 &amp; 客户外投机会</div>
+  <div class="boss-summary">
+    <div class="bs-icon">👔</div>
+    <div class="bs-text">
+      <div class="bs-label">小结</div>
+      腾讯广告Q1+20%，AI大厂买量是增量主因，视频号与快手直接竞争；百度搜索广告-22%首次跌半，医疗/教育/金融广告主预算外溢；<strong>小红书4月30日大重构+5月27日获2026世界杯分销版权</strong>，抖音退赛，快手接洽中，世界杯体育营销是阶段性窗口；Soul/陌陌/星野等社交AI陪伴APP暑期买量窗口（7–8月）需提前锁排期。
+    </div>
+  </div>
+
+  <div class="ec-wrap">
+    <table class="netco-table">
+      <thead>
+        <tr>
+          <th style="width:105px">客户</th>
+          <th style="width:50%">核心动态</th>
+          <th>快手机会 &amp; 建议</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="nt-name" style="color:#07c160">🟢 腾讯</span><span class="nt-badge nb-tc">竞媒参考</span></td>
+          <td>
+            <strong>广告+20%</strong>：AI大厂买量（千问/Kimi）是Q1增量主力；AIM+ AI定向系统覆盖30%广告主<br>
+            <strong>视频号</strong>：时长+20%，<span class="hl-risk">与快手直接竞争</span>；元宝MAU从1.3亿回落至5735万<br>
+            <a class="source-link" href="https://www.chinastarmarket.cn/detail/2370603" target="_blank">腾讯Q1财报</a>
+          </td>
+          <td>
+            快手以<span class="hl-op">下沉市场/直播种草</span>差异化定位，承接AI大厂在腾讯的补量需求；<span class="predict">【预判】</span>AI大厂会分散渠道风险，持续提供ROI数据支撑是关键。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="nt-name" style="color:var(--blue)">🔵 百度</span><span class="nt-badge nb-bd">竞媒+客户</span></td>
+          <td>
+            <strong>搜索广告承压</strong>：在线营销收入126亿（-22%），<span class="hl-risk">首次跌破半壁江山</span>；核心广告主：医疗/教育/金融/本地服务<br>
+            <strong>AI转型</strong>：AI收入136亿占52%首次过半；智能云88亿（+79%）<br>
+            <a class="source-link" href="https://caifuhao.eastmoney.com/news/20260522132245315724040" target="_blank">百度Q1分析</a>
+          </td>
+          <td>
+            百度搜索广告主在AI搜索冲击下预算外溢，<span class="hl-op">医疗/教育/金融/本地服务</span>是快手承接重点；<span class="predict">【预判】</span>需针对性设计效果转化链路方案。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="nt-name" style="color:#f43f5e">🔴 小红书</span><span class="nt-badge" style="background:#fee2e2;color:#b91c1c">竞对警惕</span></td>
+          <td>
+            <span class="new-badge">本周新</span><strong>世界杯分销版权（5月27日）</strong>：获央视2026世界杯分销版权，<span class="hl-risk">抖音退赛</span>，快手接洽中；6月12日开幕，<span class="hl-risk">品牌预算（酒水/汽车/消费品）可能向小红书倾斜</span><br>
+            <strong>组织</strong>：柯南升任总裁（5月）；月活超4亿，广告商业化加速；Rednote出海、Dots AI一级部门<br>
+            <a class="source-link" href="https://www.tmtpost.com/7974429.html" target="_blank">钛媒体·小红书重构</a>
+            <a class="source-link" href="https://m.dongqiudi.com/article/5741052.html" target="_blank">懂球帝·世界杯版权</a>
+          </td>
+          <td>
+            世界杯期间<span class="hl-op">快手积极争取版权合作</span>，明确参与接洽；世界杯体育营销预算（酒水/汽车/消费品）是阶段性外投机会。<span class="predict">【建议】</span>快手以下沉市场/直播观赛场景与小红书的精致种草形成互补，强调转化路径差异。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="nt-name" style="color:var(--pur)">🟣 社交通讯</span><span class="nt-badge nb-soc">外投买量</span></td>
+          <td>
+            <strong>Soul</strong>：AI陪伴/养成功能加码，Z世代用户增长阶段，<span class="hl-op">与快手用户高度重合</span><br>
+            <strong>陌陌/探探</strong>（挚文集团）：<span class="hl-key">暑期（7–8月）是买量大周期</span>，提前锁排期<br>
+            <strong>星野/筑梦岛</strong>等AI陪伴APP：快速扩张期，效果投流需求旺盛
+          </td>
+          <td>
+            AI社交/陪伴APP目标用户（Z世代、情感需求强）与快手年轻用户高度重合，效果广告ROI有优势；<span class="predict">【预判】</span>2026年整体预算持续增长，暑期排期需提前布局。
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <strong>数据来源：</strong>
+  <a href="https://finance.sina.com.cn/tech/roll/2026-05-15/doc-inhxxspq8209456.shtml" target="_blank">阿里Q1财报</a>
+  <a href="https://www.chinastarmarket.cn/detail/2370603" target="_blank">腾讯Q1财报</a>
+  <a href="https://www.cls.cn/detail/2369804" target="_blank">京东Q1财报</a>
+  <a href="https://finance.sina.cn/stock/jdts/2026-05-28/detail-inhzkfve8259402.d.html" target="_blank">PDD Q1财报</a>
+  <a href="https://caifuhao.eastmoney.com/news/20260522132245315724040" target="_blank">百度Q1财报分析</a>
+  <a href="https://m.thepaper.cn/newsDetail_forward_33016996" target="_blank">QuestMobile 2026Q1</a>
+  &nbsp;|&nbsp; 数据截至2026年5月28日，仅供内部参考
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ── 公共配置 ──
+Chart.defaults.font.family = '"PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif';
+Chart.defaults.font.size = 11;
+
+const QUARTERS = ['25Q1','25Q2','25Q3','25Q4','26Q1'];
+const C_REV  = 'rgba(26,58,92,0.85)';    // 营业收入 - 深蓝
+const C_MKT  = 'rgba(208,74,47,0.80)';   // 营销费 - 橙红
+const C_RATE = 'rgba(200,146,42,1)';      // 费用率 - 金色
+
+function makeEcChart(id, revData, mktData, rateData){
+  const ctx = document.getElementById(id).getContext('2d');
+  new Chart(ctx,{
+    data:{
+      labels: QUARTERS,
+      datasets:[
+        { type:'bar', label:'营业收入', data:revData, backgroundColor:C_REV, yAxisID:'y', order:2 },
+        { type:'bar', label:'营销费用', data:mktData, backgroundColor:C_MKT, yAxisID:'y', order:2 },
+        { type:'line', label:'费用率(%)', data:rateData, borderColor:C_RATE, backgroundColor:'transparent',
+          pointBackgroundColor:C_RATE, pointRadius:4, tension:0.3, yAxisID:'y2', order:1, borderWidth:2 }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{
+        legend:{ position:'bottom', labels:{ boxWidth:10, padding:8, font:{size:10} } },
+        tooltip:{ callbacks:{ label: ctx=>ctx.dataset.label+'：'+ctx.parsed.y+(ctx.dataset.yAxisID==='y2'?'%':'亿') } }
+      },
+      scales:{
+        y:{ position:'left', grid:{ color:'#eef0f4' }, ticks:{ font:{size:10} } },
+        y2:{ position:'right', grid:{ drawOnChartArea:false },
+             ticks:{ callback:v=>v+'%', font:{size:10} } }
+      }
+    }
+  });
+}
+
+function makeMediaChart(id, revData, adsData, label){
+  // 计算广告收入占比
+  const ratioData = revData.map((r,i)=>+(adsData[i]/r*100).toFixed(1));
+  const ctx = document.getElementById(id).getContext('2d');
+  new Chart(ctx,{
+    data:{
+      labels: QUARTERS,
+      datasets:[
+        { type:'bar', label:'营业收入', data:revData, backgroundColor:'rgba(26,58,92,0.80)', yAxisID:'y', order:2 },
+        { type:'bar', label:label, data:adsData, backgroundColor:'rgba(59,130,246,0.80)', yAxisID:'y', order:2 },
+        { type:'line', label:'广告占比(%)', data:ratioData, borderColor:C_RATE, backgroundColor:'transparent',
+          pointBackgroundColor:C_RATE, pointRadius:4, tension:0.3, yAxisID:'y2', order:1, borderWidth:2 }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{
+        legend:{ position:'bottom', labels:{ boxWidth:10, padding:8, font:{size:10} } },
+        tooltip:{ callbacks:{ label: ctx=>ctx.dataset.label+'：'+ctx.parsed.y+(ctx.dataset.yAxisID==='y2'?'%':'亿') } }
+      },
+      scales:{
+        y:{ position:'left', grid:{ color:'#eef0f4' }, ticks:{ font:{size:10} } },
+        y2:{ position:'right', grid:{ drawOnChartArea:false },
+             ticks:{ callback:v=>v+'%', font:{size:10} } }
+      }
+    }
+  });
+}
+
+// 阿里：营业收入 / 营销费用（"所有其他"业务含买量亏损，用市场费用近似）/ 费用率
+makeEcChart('chartAli',
+  [2365, 2477, 2478, 2848, 2434],   // 营业收入
+  [362,  532,  665,  719,  534],    // 营销费用（来源：阿里巴巴官方季报新闻稿Sales&Marketing Expenses，单位亿元）
+  [15.3, 21.5, 26.8, 25.3, 21.9]   // 费用率（营销费用/营业收入）
+);
+
+// 京东：营业收入 / 营销费 / 费用率
+makeEcChart('chartJD',
+  [3011, 3567, 2991, 3523, 3157],  // 营业收入（亿）
+  [105, 270, 211, 253, 154],  // 营销费用（来源：京东官方IR各季度财报Marketing Expenses，单位亿元）
+  [3.5, 7.6, 7.1, 7.2, 4.9]   // 营销费用率（营销费用/营业收入）
+);
+
+// PDD：营业收入 / 营销费 / 费用率
+makeEcChart('chartPDD',
+  [957,  1040, 1083,  1239, 1062],   // 营业收入
+  [334,  272,  303,  344,  338],    // 营销费用（来源：PDD官方IR各季度财报Sales&Marketing Expenses，单位亿元）
+  [34.9, 26.2, 28.0, 27.8, 31.8]   // 费用率（营销费用/营业收入）
+);
+
+// 腾讯：营业收入 / 广告收入（营销服务收入）
+makeMediaChart('chartTC',
+  [1800, 1845, 1929, 1944, 1965],  // 营业收入（来源：腾讯官方季报PDF，单位亿元）
+  [319,  358,  362,  411,  382],   // 营销服务收入（来源：腾讯官方季报PDF，单位亿元）
+  '广告收入'
+);
+
+// 百度：营业收入 / 在线营销服务收入（来源：百度官方IR）
+// 口径说明：统一使用 Baidu General Business（百度核心业务）口径，即搜索+信息流广告，不含爱奇艺(iQIYI)的在线广告收入（约13亿/季）
+// 注：Q4 2025起百度财报改版，不再在P&L中分行列示，数据来源改为各季报运营亮点表
+makeMediaChart('chartBD',
+  [325, 327, 312, 327, 321],  // 营业收入（Baidu Inc.合并口径，亿元）
+  [160, 162, 153, 151, 126],  // 在线营销收入（Baidu General Business口径，不含iQIYI，亿元）
+  '在线营销收入'
+);
+
+// ── MAU 趋势图 ──
+const MAU_MONTHS = ['25年12月','26年1月','26年2月','26年3月','26年4月'];
+
+// 头部：豆包/千问/DeepSeek/夸克（单位：亿）
+new Chart(document.getElementById('chartMauTop').getContext('2d'),{
+  type:'line',
+  data:{
+    labels: MAU_MONTHS,
+    datasets:[
+      { label:'豆包', data:[3.12, 3.22, 3.24, 3.31, 3.36],
+        borderColor:'#f97316', backgroundColor:'rgba(249,115,22,0.08)',
+        pointRadius:4, tension:0.3, borderWidth:2.5 },
+      { label:'千问', data:[1.46, 1.55, 1.58, 1.63, 1.66],
+        borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.08)',
+        pointRadius:4, tension:0.3, borderWidth:2.5 },
+      { label:'DeepSeek', data:[0.80, 1.95, 2.48, 1.58, 1.27],
+        borderColor:'#b91c1c', backgroundColor:'rgba(185,28,28,0.06)',
+        pointRadius:4, tension:0.3, borderWidth:2.5, borderDash:[5,3] },
+      { label:'夸克', data:[1.18, 1.21, 1.22, 1.23, 1.24],
+        borderColor:'#6b7a8d', backgroundColor:'rgba(107,122,141,0.06)',
+        pointRadius:4, tension:0.3, borderWidth:2 }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    interaction:{ mode:'index', intersect:false },
+    plugins:{
+      legend:{ position:'bottom', labels:{ boxWidth:10, padding:8, font:{size:10} } },
+      tooltip:{ callbacks:{ label: ctx=>ctx.dataset.label+'：'+ctx.parsed.y+'亿' } }
+    },
+    scales:{
+      y:{ grid:{ color:'#eef0f4' }, ticks:{ callback:v=>v+'亿', font:{size:10} } },
+      x:{ ticks:{ font:{size:10} } }
+    }
+  }
+});
+
+// 腰部：元宝/Kimi（单位：万）
+new Chart(document.getElementById('chartMauMid').getContext('2d'),{
+  type:'line',
+  data:{
+    labels: MAU_MONTHS,
+    datasets:[
+      { label:'元宝', data:[9200, 13000, 13000, 8200, 5735],
+        borderColor:'#07c160', backgroundColor:'rgba(7,193,96,0.08)',
+        pointRadius:4, tension:0.3, borderWidth:2.5, borderDash:[5,3] },
+      { label:'Kimi', data:[3800, 4200, 4500, 5100, null],
+        borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,0.08)',
+        pointRadius:4, tension:0.3, borderWidth:2.5,
+        spanGaps:false }
+    ]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    interaction:{ mode:'index', intersect:false },
+    plugins:{
+      legend:{ position:'bottom', labels:{ boxWidth:10, padding:8, font:{size:10} } },
+      tooltip:{ callbacks:{ label: ctx=>ctx.dataset.label+'：'+(ctx.parsed.y?ctx.parsed.y+'万':'暂无数据') } }
+    },
+    scales:{
+      y:{ grid:{ color:'#eef0f4' }, ticks:{ callback:v=>v+'万', font:{size:10} } },
+      x:{ ticks:{ font:{size:10} } }
+    }
+  }
+});
+</script>
+</body>
+</html>
